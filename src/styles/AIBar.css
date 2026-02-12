@@ -1,0 +1,135 @@
+/* =========================================
+   AI BAR CONTAINER
+   ========================================= */
+
+.ai-bar {
+  position: sticky;
+  bottom: 0;
+  max-width: 100%;
+  width: 80%;
+  margin: 0 auto;
+  background: transparent;
+  border: none;
+  border-radius: 14px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 20;
+}
+
+/* =========================================
+   COMPOSER CONTAINER
+   ========================================= */
+
+.ai-composer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 999px; /* pill */
+  transition:
+    min-height 0.1s ease-out,
+    border-radius 0.1s ease,
+    padding 0.1s ease;
+  min-height: 48px;
+  background: var(--card-bg);
+  backdrop-filter: blur(14px) saturate(130%);
+  -webkit-backdrop-filter: blur(4px);
+  padding: 5px 10px;
+}
+
+.ai-composer:focus-within {
+  outline: none;
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 0 1px rgba(250, 204, 21, 0.25);
+}
+
+.ai-composer.multiline {
+  border-radius: 30px; /* rectangle */
+  align-items: flex-end;
+  padding: 0 12px 12px 12px;
+  /*--ai-bar-height: 160px;  expanded height */
+}
+
+/* ===============================
+   TEXTAREA (AUTO-GROW)
+   =============================== */
+
+.ai-composer textarea {
+  flex: 1;
+  padding: 6px 10px 0px;
+  font-size: 0.85rem;
+  resize: none;
+  overflow-y: hidden;
+  min-height: 25px;
+  max-height: 160px;
+  line-height: 1.5;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.ai-composer textarea:focus {
+  outline: none;
+  border-color: none;
+  box-shadow: none;
+}
+
+/* ===============================
+   ACTIONS
+   =============================== */
+
+.ai-actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 6px;
+}
+
+.ai-actions .btn-send {
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: var(--accent-gold);
+  border: 1px solid var(--accent-gold);
+  color: #000;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.ai-actions .btn-send:hover {
+  background: transparent;
+  color: var(--accent-gold);
+  box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.25);
+}
+
+.ai-actions .btn-send:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ===============================
+   META
+   =============================== */
+
+.ai-bar-meta {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--accent-gold);
+}
+
+.ai-bar-meta span {
+  opacity: 1;
+}
+
+@media (max-width: 900px) {
+  .ai-bar {
+    width: 95%;
+  }
+}

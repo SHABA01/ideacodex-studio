@@ -1,0 +1,42 @@
+/* Smooth fade when switching themes */
+html {
+  transition:
+    background-color 0.6s ease,
+    color 0.6s ease,
+    filter 0.6s ease;
+}
+
+/* Optional: fade effect on entire body for a more immersive transition */
+body {
+  transition:
+    background-color 0.6s ease,
+    color 0.6s ease;
+}
+
+/* Button style */
+.theme-toggle {
+  background: transparent;
+  border: 1px solid var(--border-gold);
+  box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.25);
+  cursor: pointer;
+  font-size: 1.4rem;
+  color: var(--accent-gold);
+  padding: 8px 18px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+  background: var(--accent-gold);
+  color: #000;
+}
+
+/* 🌙 Dark Mode Overrides */
+[data-theme="dark"] .theme-toggle {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .theme-toggle:hover {
+  color: #000;
+}

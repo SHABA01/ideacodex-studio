@@ -1,0 +1,96 @@
+/* Header.css */
+.app-header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding: 5px 20px;
+  border-bottom: 1px solid var(--card-border);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent 30%);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.app-header-left {
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+
+.mobile-open {
+  display:none;
+  background: transparent;
+  color: var(--accent-gold);
+  align-items: center;
+  justify-content: center;
+  border: none;
+  font-size: 1.05rem;
+  font-style: bold;
+  padding: 0.3em 0.7em;
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.mobile-open:hover {
+  transform: scale(1.1);
+}
+
+.mobile-open.open {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.breadcrumb-wrap {
+  display:flex;
+  gap:10px;
+  align-items:center;
+  cursor:pointer;
+}
+
+.breadcrumbs .crumb {
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.breadcrumbs .sep {
+  color: var(--text-secondary);
+  margin-left:6px;
+  margin-right:6px;
+}
+
+.app-header-right {
+  display:flex;
+  align-items:center;
+}
+
+.header-avatar, .header-avatar-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border: 2px solid var(--accent-gold);
+  cursor: pointer;
+}
+
+.header-avatar .avatar-initials {
+  font-weight:700;
+  color: var(--text-primary);
+  background: transparent;
+}
+
+/* ========================= TABLET & MOBILE (<= 1045px) ========================= */
+@media (max-width: 1045px) {
+  .mobile-open { display:inline-block; }
+
+  .app-header {
+    padding: 5px 15px;
+  }
+}

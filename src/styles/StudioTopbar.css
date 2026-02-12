@@ -1,0 +1,58 @@
+/* ===============================
+   STUDIO TOPBAR / PROJECT META
+   =============================== */
+
+.studio-project-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+
+  width: 100%;
+}
+
+.meta-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.meta-left h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.project-status {
+  font-size: 0.75rem;
+  padding: 3px 6px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.08);
+}
+
+.last-saved {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.meta-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.open-launcher-btn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--accent-gold);
+  border: 1px solid var(--accent-gold);
+  color: #000;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.open-launcher-btn:hover {
+  background: transparent;
+  color: var(--accent-gold);
+  box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.25);
+}

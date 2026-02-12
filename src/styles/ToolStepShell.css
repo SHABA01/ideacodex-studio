@@ -1,0 +1,29 @@
+/* =========================================
+   TOOL SHELL
+   ========================================= */
+
+.tool-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* =========================================
+   HEADER
+   ========================================= */
+
+.tool-shell-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+/* =========================================
+   BODY
+   ========================================= */
+
+.tool-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

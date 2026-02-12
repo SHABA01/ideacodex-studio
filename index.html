@@ -2,12 +2,56 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link id="favicon" rel="icon" type="image/svg+xml" href="/IdeaCodex_icon_yellow.svg" />
+
+    <!-- 🌗 Preserve user theme before React and styles load -->
+    <script>
+      (function() {
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme) {
+          document.documentElement.setAttribute("data-theme", savedTheme);
+        } else {
+          const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+          document.documentElement.setAttribute("data-theme", prefersDark ? "dark" : "light");
+        }
+      })();
+    </script>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ideacodex-studio</title>
+    <title>IdeaCodex Studio</title>
   </head>
+
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script type="module" src="/src/main.jsx"></script>
+
+    <!-- 🎨 Dynamic favicon updater (unchanged) -->
+    <script>
+      const favicon = document.getElementById("favicon");
+
+      function setFavicon(theme) {
+        if (theme === "dark") {
+          favicon.href = "/IdeaCodex_icon_white.svg";
+        } else {
+          favicon.href = "/IdeaCodex_icon_yellow.svg";
+        }
+      }
+
+      // Detect the initial theme
+      const root = document.documentElement;
+      const currentTheme = root.getAttribute("data-theme") || "light";
+      setFavicon(currentTheme);
+
+      // Observe theme changes dynamically
+      const observer = new MutationObserver(() => {
+        const newTheme = root.getAttribute("data-theme");
+        setFavicon(newTheme);
+      });
+
+      observer.observe(root, {
+        attributes: true,
+        attributeFilter: ["data-theme"],
+      });
+    </script>
   </body>
 </html>

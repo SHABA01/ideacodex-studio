@@ -1,0 +1,27 @@
+:root {
+  /* 🌞 Light Mode (default) */
+  --bg-primary: #1F1C0D;
+  --bg-gradient-start: #1D1A0B;
+  --bg-gradient-end: #201D0D;
+  --text-primary: #FFFFFF;
+  --text-secondary: #BDB9A5;
+  --accent-gold: #FFD52D;
+  --accent-hover: #E6B800;
+  --border-gold: #C59E00;
+  --card-bg: rgba(255, 255, 255, 0.02);
+  --card-border: rgba(255, 213, 45, 0.1);
+}
+
+/* 🌚 Dark Mode */
+[data-theme="dark"] {
+  --bg-primary: #0e0e0f;
+  --bg-gradient-start: #111112;
+  --bg-gradient-end: #181818;
+  --text-primary: #f0f0f0;
+  --text-secondary: #aaa;
+  --accent-gold: #FFD52D;
+  --accent-hover: #E6B800;
+  --border-gold: #C59E00;
+  --card-bg: rgba(255, 255, 255, 0.05);
+  --card-border: rgba(255, 255, 255, 0.1);
+}
