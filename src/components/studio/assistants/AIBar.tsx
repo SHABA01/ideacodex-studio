@@ -1,9 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useAppAccess } from "../../../contexts/AppAccessContext";
 import "../../../styles/AIBar.css";
 
 export default function AIBar({ onSend }) {
-  const { tier, policy } = useAppAccess();
 
   const quota =
     typeof policy?.apiCredits === "number"
@@ -123,7 +121,6 @@ export default function AIBar({ onSend }) {
       </div>
 
       <div className="ai-bar-meta">
-        <span>Tier: {tier.toUpperCase()}</span>
         <span>Credits left: {remaining}</span>
       </div>
     </div>
