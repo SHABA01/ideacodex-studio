@@ -1,47 +1,63 @@
-import React from "react";
-import { useStudioProjects } from "../hooks/useStudioProjects";
-import { useStudioTool } from "../hooks/useStudioTool";
+// src/pages/Studio.tsx
 
-import StudioLayout from "../components/studio/layout/StudioLayout";
-import StudioTopbar from "../components/studio/layout/StudioTopbar";
+import { useStudioProjects } from "../hooks/useStudioProjects";
 import StudioCanvas from "../components/studio/canvas/StudioCanvas";
 import AIBar from "../components/studio/assistants/AIBar";
+import ThemeToggle from "../components/ThemeToggle";
 import { mockAIResponse } from "../components/studio/assistants/mockAI";
+import "../styles/Studio.css";
+
+/**
+ * Studio
+ * Core workspace.
+ * Sidebar controls modes.
+ * Header displays current mode.
+ */
 
 export default function Studio() {
   const { project, addBlock } = useStudioProjects();
 
+  // Temporary hardcoded mode
+  // Later this will come from global mode state
+  const currentMode = "Reality Lens";
+
   return (
-    <StudioLayout
-      topbar={
-        <StudioTopbar
-          projectName={project.name}
-          onOpenTools={tool.openLauncher}
-        />
-      }
-    
-      canvas={<StudioCanvas blocks={project.blocks} />}
-      
-      aiBar={
-        <AIBar
-          onSend={(text) => {
-            // 1️⃣ User message
-            const userBlock = {
-              id: Date.now().toString(),
-              role: "user",
-              content: text,
-              createdAt: Date.now()
-            };
-          
-            addBlock(userBlock);
-          
-            // 2️⃣ Mock AI response
-            setTimeout(() => {
-              addBlock(mockAIResponse(text));
-            }, 600);
-          }}
-        />
-      }
-    />
+    <div className="studio-root">
+
+      {/* HEADER BAR */}
+      <header className="studio-header">
+        <div className="studio-header-left">
+          <h2 className="studio-mode-name">{currentMode}</h2>
+        </div>
+
+        <div className="studio-header-right">
+          <ThemeToggle />
+        </div>
+      </header>
+
+      {/* CANVAS */}
+      <div className="studio-canvas-wrapper">
+        <StudioCanvas blocks={project.blocks} />
+      </div>
+
+      {/* AI BAR */}
+      <AIBar
+        onSend={(text: string) => {
+          const userBlock = {
+            id: Date.now().toString(),
+            role: "user",
+            content: text,
+            createdAt: Date.now()
+          };
+
+          addBlock(userBlock);
+
+          setTimeout(() => {
+            addBlock(mockAIResponse(text));
+          }, 600);
+        }}
+      />
+
+    </div>
   );
 }

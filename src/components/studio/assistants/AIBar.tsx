@@ -1,30 +1,33 @@
 import React, { useState, useRef, useEffect } from "react";
 import "../../../styles/AIBar.css";
 
-export default function AIBar({ onSend }) {
+interface AIBarProps {
+  onSend?: (text: string) => void;
+}
 
-  const quota =
-    typeof policy?.apiCredits === "number"
-      ? policy.apiCredits
-      : policy?.apiCredits === "unlimited"
-      ? Infinity
-      : 0;
+export default function AIBar({ onSend }: AIBarProps) {
+  /* -----------------------------
+     Local Quota (No Tier System)
+  ------------------------------ */
 
-  const [used, setUsed] = useState(0);
-  const [value, setValue] = useState("");
-  const [streaming, setStreaming] = useState(false);
-  const [isMultiline, setIsMultiline] = useState(false);
+  const TOTAL_CREDITS = 100; // ← Change later if needed
 
-  const textareaRef = useRef(null);
-  const composerRef = useRef(null);
-  const barRef = useRef(null);
+  const [used, setUsed] = useState<number>(0);
+  const [value, setValue] = useState<string>("");
+  const [streaming, setStreaming] = useState<boolean>(false);
+  const [isMultiline, setIsMultiline] = useState<boolean>(false);
 
-  const lastHeightRef = useRef(0);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const composerRef = useRef<HTMLDivElement | null>(null);
+  const barRef = useRef<HTMLDivElement | null>(null);
 
-  const remaining = quota === Infinity ? "∞" : quota - used;
-  const canSend = quota === Infinity || used < quota;
+  const lastHeightRef = useRef<number>(0);
 
-  /* Auto-grow textarea */
+  const canSend = used < TOTAL_CREDITS;
+
+  /* -----------------------------
+     Auto-grow textarea
+  ------------------------------ */
   useEffect(() => {
     const textarea = textareaRef.current;
     const composer = composerRef.current;
@@ -48,7 +51,9 @@ export default function AIBar({ onSend }) {
       : `${BASE_HEIGHT}px`;
   }, [value]);
 
-  /* Measure FINAL ai-bar height (loop-safe) */
+  /* -----------------------------
+     ResizeObserver (loop-safe)
+  ------------------------------ */
   useEffect(() => {
     const bar = barRef.current;
     if (!bar) return;
@@ -56,7 +61,6 @@ export default function AIBar({ onSend }) {
     const observer = new ResizeObserver(() => {
       const height = Math.ceil(bar.getBoundingClientRect().height);
 
-      // 🔒 prevent feedback loop
       if (height === lastHeightRef.current) return;
 
       lastHeightRef.current = height;
@@ -71,6 +75,9 @@ export default function AIBar({ onSend }) {
     return () => observer.disconnect();
   }, []);
 
+  /* -----------------------------
+     Send Logic
+  ------------------------------ */
   const send = () => {
     if (!value.trim() || !canSend || streaming) return;
 
@@ -81,13 +88,16 @@ export default function AIBar({ onSend }) {
     onSend?.(prompt);
   };
 
-  const onKeyDown = (e) => {
+  const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       send();
     }
   };
 
+  /* -----------------------------
+     Render
+  ------------------------------ */
   return (
     <div ref={barRef} className="ai-bar">
       <div
@@ -102,7 +112,7 @@ export default function AIBar({ onSend }) {
           placeholder={
             canSend
               ? "Message IdeaCodex…"
-              : "AI quota reached — upgrade to continue"
+              : "Credit limit reached"
           }
           disabled={!canSend}
           rows={1}
@@ -121,7 +131,9 @@ export default function AIBar({ onSend }) {
       </div>
 
       <div className="ai-bar-meta">
-        <span>Credits left: {remaining}</span>
+        <span>
+          Credits: {used} / {TOTAL_CREDITS}
+        </span>
       </div>
     </div>
   );

@@ -1,27 +1,20 @@
-// src/App.jsx
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AppLayout from "./layouts/AppLayout";
-import StudioPage from "./pages/Studio";
-
 import PageNotFound from "./pages/PageNotFound";
 
-const App = () => {
-  return (
-    <Router>
-      <Routes>
-        <Route element={<AppLayout />}>
-          <Route path="/" element={<StudioPage />} />
-        </Route>
+/**
+ * Root Application Router
+ * IdeaCodex Studio runs as a single-route app.
+ * Modes are handled internally via state, not routing.
+ */
 
-        {/* Fallback */}
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<AppLayout />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
-
-      {/* <ProcessLoader /> */}
-    </Router>
+    </BrowserRouter>
   );
-};
-
-export default App;
+}
