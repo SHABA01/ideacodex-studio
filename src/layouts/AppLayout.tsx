@@ -47,7 +47,7 @@ export default function AppLayout() {
         {/* Single persistent header will live inside Studio */}
         
         <main className="app-content">
-          <NeuralNetworkBackground enabled={true} />
+          <NeuralNetworkBackground />
           <Studio />
         </main>
 
