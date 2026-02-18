@@ -1,30 +1,42 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ChatBubble from "./ChatBubble";
 import "../../../styles/StudioCanvas.css";
 
 const NEAR_BOTTOM_PX = 80;
 
-export default function StudioCanvas({ blocks = [], isTyping = false }) {
+export interface StudioBlock {
+  id: string;
+  role: "user" | "ai" | "tool";
+  content: string;
+  senderId?: string;
+  displayName?: string;
+  fullName?: string;
+  source?: string;
+  timestamp?: string;
+  createdAt?: number;
+  suggestedActions?: string[];
+  canConvert?: boolean;
+}
+
+interface StudioCanvasProps {
+  blocks?: StudioBlock[];
+  isTyping?: boolean;
+}
+
+export default function StudioCanvas({
+  blocks = [],
+  isTyping = false,
+}: StudioCanvasProps) {
   const isEmpty = blocks.length === 0;
 
-  const timelineRef = useRef(null);
-  const bottomRef = useRef(null);
+  const timelineRef = useRef<HTMLDivElement | null>(null);
+  const bottomRef = useRef<HTMLDivElement | null>(null);
 
   const [isAtBottom, setIsAtBottom] = useState(true);
   const [unreadCount, setUnreadCount] = useState(0);
 
-  // 🔒 Source of truth for auto-scroll permission
   const allowAutoScrollRef = useRef(true);
 
-  const forceRecomputeScrollState = () => {
-    requestAnimationFrame(() => {
-      updateScrollPosition();
-    });
-  };
-
-  /* =========================
-     Scroll position detection
-     ========================= */
   const updateScrollPosition = () => {
     const el = timelineRef.current;
     if (!el) return;
@@ -42,32 +54,21 @@ export default function StudioCanvas({ blocks = [], isTyping = false }) {
     }
   };
 
-  /* =========================
-     Scroll listener (user intent)
-     ========================= */
   useEffect(() => {
     const el = timelineRef.current;
     if (!el) return;
 
     el.addEventListener("scroll", updateScrollPosition);
-
-    // 🔑 Survives hard refresh
     requestAnimationFrame(updateScrollPosition);
 
     return () =>
       el.removeEventListener("scroll", updateScrollPosition);
   }, []);
 
-  /* =========================
-     Recalculate after content changes
-     ========================= */
   useEffect(() => {
     requestAnimationFrame(updateScrollPosition);
   }, [blocks.length, isTyping]);
 
-  /* =========================
-     New content handling
-     ========================= */
   useEffect(() => {
     if (!allowAutoScrollRef.current) {
       setUnreadCount((c) => c + 1);
@@ -76,13 +77,10 @@ export default function StudioCanvas({ blocks = [], isTyping = false }) {
 
     requestAnimationFrame(() => {
       bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-      forceRecomputeScrollState(); // 🔑
+      updateScrollPosition();
     });
   }, [blocks.length, isTyping]);
 
-  /* =========================
-     Empty state
-     ========================= */
   if (isEmpty) {
     return (
       <div className="studio-canvas">
@@ -98,9 +96,6 @@ export default function StudioCanvas({ blocks = [], isTyping = false }) {
     );
   }
 
-  /* =========================
-     Render
-     ========================= */
   return (
     <div className="studio-canvas">
       <div className="chat-timeline" ref={timelineRef}>
@@ -115,7 +110,7 @@ export default function StudioCanvas({ blocks = [], isTyping = false }) {
             <ChatBubble
               key={block.id}
               block={block}
-              isGrouped={isGrouped}
+              isGrouped={!!isGrouped}
               isMine={block.role === "user"}
               highlightable={block.role !== "user"}
             />
@@ -142,7 +137,7 @@ export default function StudioCanvas({ blocks = [], isTyping = false }) {
             allowAutoScrollRef.current = true;
             bottomRef.current?.scrollIntoView({ behavior: "smooth" });
             setUnreadCount(0);
-            forceRecomputeScrollState(); // 🔑
+            updateScrollPosition();
           }}
           title="Jump to latest"
         >

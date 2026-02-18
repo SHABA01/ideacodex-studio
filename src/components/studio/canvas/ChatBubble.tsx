@@ -1,14 +1,25 @@
-import React from "react";
+import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
+import { StudioBlock } from "./StudioCanvas";
 
-function getHeaderLabel(block, isMine) {
+interface ChatBubbleProps {
+  block: StudioBlock;
+  isGrouped: boolean;
+  isMine: boolean;
+  highlightable?: boolean;
+}
+
+function getHeaderLabel(
+  block: StudioBlock,
+  isMine: boolean
+): string {
   if (isMine) return "You";
   if (block.role === "ai") return "IdeaCodex";
   if (block.role === "tool") return block.source || "Tool";
   return block.displayName || block.fullName || "Collaborator";
 }
 
-function getTimestamp(block) {
+function getTimestamp(block: StudioBlock): string {
   if (block.timestamp) return block.timestamp;
 
   if (block.createdAt) {
@@ -18,20 +29,20 @@ function getTimestamp(block) {
     });
   }
 
-  return ""; // intentionally blank if nothing exists
+  return "";
 }
 
 export default function ChatBubble({
   block,
   isGrouped,
   isMine,
-  highlightable = false
-}) {
-  const contentRef = React.useRef(null);
-  const [expanded, setExpanded] = React.useState(false);
-  const [overflowing, setOverflowing] = React.useState(false);
+  highlightable = false,
+}: ChatBubbleProps) {
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const [expanded, setExpanded] = useState(false);
+  const [overflowing, setOverflowing] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!contentRef.current) return;
     setOverflowing(contentRef.current.scrollHeight > 120);
   }, [block.content]);
@@ -68,8 +79,10 @@ export default function ChatBubble({
         </div>
 
         {overflowing && !expanded && (
-          <button className="read-more"
-           onClick={() => setExpanded(true)}>
+          <button
+            className="read-more"
+            onClick={() => setExpanded(true)}
+          >
             …Read more
           </button>
         )}
