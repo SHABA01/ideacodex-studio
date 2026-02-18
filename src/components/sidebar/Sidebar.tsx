@@ -74,7 +74,7 @@ export default function Sidebar({
 
           {!collapsed && (
             <div className="sidebar-mode">
-              IdeaCodex Studio
+              IdeaCodex
             </div>
           )}
 

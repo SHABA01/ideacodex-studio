@@ -30,6 +30,7 @@
   align-items: center;
   height: 60px;
   position: relative;
+  gap: 12px;
 }
 
 .brand {
@@ -143,6 +144,7 @@
   padding: 10px 12px;
   border-radius: 8px;
   color: var(--text-secondary);
+  background: transparent;
   text-decoration:none;
   transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease, scale 0.18s ease;
   font-weight:600;

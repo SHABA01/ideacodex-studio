@@ -1,22 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import ChatBubble from "./ChatBubble";
+import type { StudioBlock } from "../../../components/studio/types/studio";
 import "../../../styles/StudioCanvas.css";
 
 const NEAR_BOTTOM_PX = 80;
-
-export interface StudioBlock {
-  id: string;
-  role: "user" | "ai" | "tool";
-  content: string;
-  senderId?: string;
-  displayName?: string;
-  fullName?: string;
-  source?: string;
-  timestamp?: string;
-  createdAt?: number;
-  suggestedActions?: string[];
-  canConvert?: boolean;
-}
 
 interface StudioCanvasProps {
   blocks?: StudioBlock[];
@@ -103,7 +90,6 @@ export default function StudioCanvas({
           const prev = blocks[index - 1];
           const isGrouped =
             prev &&
-            prev.senderId === block.senderId &&
             prev.role === block.role;
 
           return (
@@ -112,7 +98,6 @@ export default function StudioCanvas({
               block={block}
               isGrouped={!!isGrouped}
               isMine={block.role === "user"}
-              highlightable={block.role !== "user"}
             />
           );
         })}
