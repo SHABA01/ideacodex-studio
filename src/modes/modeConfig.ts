@@ -50,7 +50,7 @@ export const modes: StudioMode[] = [
   {
     id: "risk-radar",
     label: "Risk Radar",
-    icon: "fa-solid fa-radar",
+    icon: "fa-solid fa-triangle-exclamation",
   },
   {
     id: "narrative-builder",

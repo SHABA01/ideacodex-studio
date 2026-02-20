@@ -7,7 +7,15 @@ import { mockAIResponse } from "../components/studio/assistants/mockAI";
 import type { StudioBlock } from "../components/studio/types/studio";
 import "../styles/Studio.css";
 
-export default function Studio() {
+type StudioProps = {
+  onOpenMobile: () => void;
+  mobileOpen: boolean;
+};
+
+export default function Studio({
+  onOpenMobile,
+  mobileOpen,
+}: StudioProps) {
   const { project, addBlock } = useStudioProjects();
 
   const currentMode = "Reality Lens";
@@ -17,6 +25,14 @@ export default function Studio() {
 
       <header className="studio-header">
         <div className="studio-header-left">
+          <button
+            className={`mobile-open ${mobileOpen ? "open" : ""}`}
+            onClick={onOpenMobile}
+            aria-label="Open menu"
+          >
+            <i className="fa-solid fa-bars" />
+          </button>
+
           <h2 className="studio-mode-name">{currentMode}</h2>
         </div>
 

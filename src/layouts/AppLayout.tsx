@@ -48,7 +48,10 @@ export default function AppLayout() {
         
         <main className="app-content">
           <NeuralNetworkBackground />
-          <Studio />
+          <Studio
+            onOpenMobile={() => setMobileOpen(true)}
+            mobileOpen={mobileOpen}
+          />
         </main>
 
       </div>

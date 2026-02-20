@@ -22,9 +22,45 @@
   z-index: 10;
 }
 
+.studio-header-left {
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+
+.mobile-open {
+  display:none;
+  background: transparent;
+  color: var(--accent-gold);
+  align-items: center;
+  justify-content: center;
+  border: none;
+  font-size: 1.05rem;
+  font-style: bold;
+  padding: 0.3em 0.7em;
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.mobile-open:hover {
+  transform: scale(1.1);
+}
+
+.mobile-open.open {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
 .studio-mode-name {
   font-size: 18px;
   font-weight: 600;
+}
+
+.studio-header-right {
+  display:flex;
+  align-items:center;
 }
 
 /* ===== Canvas Wrapper ===== */
@@ -42,4 +78,10 @@
   position: sticky;
   bottom: 0;
   z-index: 20;
+}
+
+@media (max-width: 1045px) {
+  .mobile-open {
+    display: inline-block;
+  }
 }

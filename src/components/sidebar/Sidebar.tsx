@@ -41,7 +41,10 @@ export default function Sidebar({
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "auto";
-    return () => (document.body.style.overflow = "auto");
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
   }, [mobileOpen]);
 
   return (
@@ -107,6 +110,58 @@ export default function Sidebar({
         </nav>
 
       </aside>
+
+      {mobileOpen && (
+        <div className="mobile-drawer open">
+         <div
+            className="mobile-backdrop"
+            onClick={() => setMobileOpen(false)}
+          />
+
+          <div className="mobile-inner">
+
+            <div className="mobile-inner-header">
+              <div className="brand">
+                <img
+                  src={logo}
+                  alt="IdeaCodex Logo"
+                  className="brand-logo"
+                />
+              </div>
+
+              <div className="mobile-drawer-mode">
+                IdeaCodex
+              </div>
+
+              <button
+                className="btn-close"
+                onClick={() => setMobileOpen(false)}
+              >
+                ✕
+              </button>
+            </div>
+
+            <nav className="mobile-nav">
+              {modes.map((mode) => (
+                <button
+                  key={mode.id}
+                  className={`nav-item ${
+                    currentMode === mode.id ? "active" : ""
+                  }`}
+                  onClick={() => {
+                    onModeChange(mode.id);
+                    setMobileOpen(false);
+                  }}
+                >
+                  <i className={mode.icon} />
+                  <span>{mode.label}</span>
+                </button>
+              ))}
+            </nav>
+
+          </div>
+        </div>
+      )}
     </>
   );
 }
