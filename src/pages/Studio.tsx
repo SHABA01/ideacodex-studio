@@ -45,7 +45,7 @@ export default function Studio({
       </header>
 
       <div className="studio-canvas-wrapper">
-        <StudioCanvas blocks={project.blocks} />
+        <StudioCanvas blocks={project.conversations[currentMode] || []} />
       </div>
 
       <AIBar
@@ -57,10 +57,10 @@ export default function Studio({
             createdAt: Date.now(),
           };
 
-          addBlock(userBlock);
+          addBlock(currentMode, userBlock);
 
           setTimeout(() => {
-            addBlock(mockAIResponse(text));
+            addBlock(currentMode, mockAIResponse(text));
           }, 600);
         }}
       />

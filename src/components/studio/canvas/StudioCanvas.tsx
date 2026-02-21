@@ -75,7 +75,7 @@ export default function StudioCanvas({
           <div className="canvas-empty-inner">
             <p className="primary">Your canvas is empty</p>
             <p className="secondary">
-              Start by launching a tool or sending a message
+              Start by sending a message
             </p>
           </div>
         </div>

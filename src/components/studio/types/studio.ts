@@ -19,10 +19,11 @@ export interface StudioBlock {
 /**
  * A Studio project represents a conversation workspace.
  */
-export interface StudioProject {
+export type StudioProject = {
   id: string;
   name: string;
   description?: string;
-  blocks: StudioBlock[];
+  conversations: Record<string, StudioBlock[]>;
   lastUpdated: number;
-}
+};
+
