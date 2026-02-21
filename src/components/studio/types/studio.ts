@@ -27,3 +27,10 @@ export type StudioProject = {
   lastUpdated: number;
 };
 
+export type LLMRole = "system" | "user" | "assistant";
+
+export type LLMMessage = {
+  role: LLMRole;
+  content: string;
+};
+

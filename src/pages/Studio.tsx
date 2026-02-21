@@ -75,11 +75,12 @@ export default function Studio({
 
           setTimeout(() => {
             addBlock(
-             currentMode,
-             generateAIResponse({
-               mode: currentMode,
-               userText: text,
-             })
+              currentMode,
+              generateAIResponse({
+                mode: currentMode,
+                userText: text,
+                previousBlocks: project.conversations[currentMode] || [],
+              })
             );
           }, 600);
         }}

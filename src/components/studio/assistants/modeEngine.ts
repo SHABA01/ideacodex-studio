@@ -2,10 +2,12 @@
 
 import type { ModeId } from "../../../context/ModeContext";
 import type { StudioBlock } from "../../../components/studio/types/studio";
+import type { LLMMessage } from "../types/studio";
 
 type GenerateParams = {
-  mode: ModeId;
+  mode: string;
   userText: string;
+  previousBlocks: StudioBlock[];
 };
 
 const modeSystemPrompts: Record<ModeId, string> = {
@@ -49,18 +51,58 @@ const modeSystemPrompts: Record<ModeId, string> = {
     "You structure trade-offs and evaluate decision variables objectively.",
 };
 
+function buildLLMHistory(
+  mode: string,
+  blocks: StudioBlock[],
+  systemPrompt: string
+): LLMMessage[] {
+
+  const history: LLMMessage[] = [];
+
+  // System directive first
+  history.push({
+    role: "system",
+    content: systemPrompt,
+  });
+
+  for (const block of blocks) {
+    if (block.role === "user") {
+      history.push({
+        role: "user",
+        content: block.content,
+      });
+    }
+
+    if (block.role === "ai") {
+      history.push({
+        role: "assistant",
+        content: block.content,
+      });
+    }
+  }
+
+  return history;
+}
+
 export function generateAIResponse({
   mode,
   userText,
+  previousBlocks,
 }: GenerateParams): StudioBlock {
+
   const systemPrompt = modeSystemPrompts[mode] ?? "";
 
+  const llmMessages = buildLLMHistory(
+    mode,
+    previousBlocks,
+    systemPrompt
+  );
+
+  // Simulated AI output
   const content =
     `🧠 ${mode.toUpperCase()} MODE\n\n` +
-    `System directive:\n${systemPrompt}\n\n` +
-    `User idea:\n"${userText}"\n\n` +
-    `→ Analysis begins here.\n\n` +
-    `This is a mock response aligned with the mode personality.`;
+    `Structured LLM Messages:\n\n` +
+    JSON.stringify(llmMessages, null, 2);
 
   return {
     id: Date.now().toString() + "-ai",
