@@ -117,11 +117,13 @@ export async function streamAIResponse({
   userText,
   previousBlocks,
   onChunk,
+  signal,
 }: {
   mode: string;
   userText: string;
   previousBlocks: StudioBlock[];
-  onChunk: (chunk: string, done: boolean) => void;
+  onChunk: (chunk: string) => void;
+  signal: AbortSignal;
 }) {
   const systemPrompt = modeSystemPrompts[mode] ?? "";
 
@@ -141,9 +143,14 @@ export async function streamAIResponse({
   let accumulated = "";
 
   for (let i = 0; i < words.length; i++) {
+    // 🚨 Cancellation check
+    if (signal.aborted) {
+      throw new DOMException("Aborted", "AbortError");
+    }
+
     accumulated += words[i] + " ";
 
-    onChunk(accumulated, i === words.length - 1);
+    onChunk(accumulated);
 
     await new Promise((r) => setTimeout(r, 20));
   }

@@ -1,4 +1,5 @@
 // src/pages/Studio.tsx
+import { useRef, useState } from "react";
 import { useMode } from "../context/ModeContext";
 import { modes } from "../modes/modeConfig";
 import { useStudioProjects } from "../hooks/useStudioProjects";
@@ -29,6 +30,9 @@ export default function Studio({
 
   const modeLabel = modes.find(m => m.id === currentMode)?.label ?? "";
 
+  const [isGenerating, setIsGenerating] = useState(false);
+  const abortRef = useRef<AbortController | null>(null);
+
   return (
     <div className="studio-root">
 
@@ -46,6 +50,18 @@ export default function Studio({
         </div>
 
         <div className="studio-header-right">
+          {isGenerating && (
+            <button
+              className="mode-stop-btn"
+              onClick={() => {
+                abortRef.current?.abort();
+              }}
+              title="Stop generation"
+            >
+              <i className="fa-solid fa-stop" />
+            </button>
+          )}
+
           <button
             className="mode-reset-btn"
             onClick={() => {
@@ -65,24 +81,28 @@ export default function Studio({
       </header>
 
       <div className="studio-canvas-wrapper">
-        <StudioCanvas blocks={project.conversations[currentMode] || []} />
+        <StudioCanvas
+          blocks={project.conversations[currentMode] || []}
+          isTyping={isGenerating}
+        />
       </div>
 
       <AIBar
-        onSend={(text: string) => {
+        disabled={isGenerating}
+        onSend={async (text: string) => {
+          if (isGenerating) return;
+
           const userId = Date.now().toString();
 
-          // 1️⃣ Add user block
           const userBlock: StudioBlock = {
             id: userId,
             role: "user",
             content: text,
             createdAt: Date.now(),
-          };
+         };
 
           addBlock(currentMode, userBlock);
 
-          // 2️⃣ Add placeholder AI block
           const aiId = Date.now().toString() + "-ai";
 
           addBlock(currentMode, {
@@ -92,21 +112,34 @@ export default function Studio({
             createdAt: Date.now(),
           });
 
-          // 3️⃣ Start streaming
-          streamAIResponse({
-            mode: currentMode,
-            userText: text,
-            previousBlocks: project.conversations[currentMode] || [],
-            onChunk: (chunk) => {
-              updateLastBlock(currentMode, (block) => ({
-                ...block,
-                content: chunk,
-              }));
-            },
-          });
+          setIsGenerating(true);
+
+          const controller = new AbortController();
+          abortRef.current = controller;
+
+          try {
+            await streamAIResponse({
+              mode: currentMode,
+              userText: text,
+              previousBlocks: project.conversations[currentMode] || [],
+              signal: controller.signal,
+              onChunk: (chunk) => {
+                updateLastBlock(currentMode, (block) => ({
+                  ...block,
+                  content: chunk,
+                }));
+              },
+            });
+          } catch (err) {
+            if ((err as any).name !== "AbortError") {
+              console.error(err);
+            }
+          } finally {
+            setIsGenerating(false);
+            abortRef.current = null;
+          }
         }}
       />
-
     </div>
   );
 }

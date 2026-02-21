@@ -1,11 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
 import "../../../styles/AIBar.css";
 
-interface AIBarProps {
-  onSend?: (text: string) => void;
-}
+type AIBarProps = {
+  onSend: (text: string) => void;
+  disabled?: boolean;
+};
 
-export default function AIBar({ onSend }: AIBarProps) {
+export default function AIBar({
+  onSend,
+  disabled = false,
+}: AIBarProps) {
   /* -----------------------------
      Local Quota (No Tier System)
   ------------------------------ */
@@ -114,7 +118,7 @@ export default function AIBar({ onSend }: AIBarProps) {
               ? "Message IdeaCodex…"
               : "Credit limit reached"
           }
-          disabled={!canSend}
+          disabled={disabled}
           rows={1}
         />
 
@@ -122,7 +126,7 @@ export default function AIBar({ onSend }: AIBarProps) {
           <button
             className="btn-send"
             onClick={send}
-            disabled={!canSend || streaming}
+            disabled={disabled}
             title="Send"
           >
             ➤
