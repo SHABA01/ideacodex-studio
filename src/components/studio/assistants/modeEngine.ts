@@ -111,3 +111,40 @@ export function generateAIResponse({
     createdAt: Date.now(),
   };
 }
+
+export async function streamAIResponse({
+  mode,
+  userText,
+  previousBlocks,
+  onChunk,
+}: {
+  mode: string;
+  userText: string;
+  previousBlocks: StudioBlock[];
+  onChunk: (chunk: string, done: boolean) => void;
+}) {
+  const systemPrompt = modeSystemPrompts[mode] ?? "";
+
+  const llmMessages = buildLLMHistory(
+    mode,
+    previousBlocks,
+    systemPrompt
+  );
+
+  const simulatedResponse =
+    `🧠 ${mode.toUpperCase()} MODE\n\n` +
+    `Analyzing structured history...\n\n` +
+    JSON.stringify(llmMessages, null, 2);
+
+  const words = simulatedResponse.split(" ");
+
+  let accumulated = "";
+
+  for (let i = 0; i < words.length; i++) {
+    accumulated += words[i] + " ";
+
+    onChunk(accumulated, i === words.length - 1);
+
+    await new Promise((r) => setTimeout(r, 20));
+  }
+}

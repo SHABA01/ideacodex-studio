@@ -67,5 +67,29 @@ export function useStudioProjects() {
     }));
   };
 
-  return { project, addBlock, resetModeConversation };
+  const updateLastBlock = (
+    modeId: string,
+    updater: (block: StudioBlock) => StudioBlock
+  ) => {
+    setProject((prev) => {
+      const modeBlocks = prev.conversations[modeId] || [];
+      if (!modeBlocks.length) return prev;
+
+      const updatedBlocks = [...modeBlocks];
+      const lastIndex = updatedBlocks.length - 1;
+
+      updatedBlocks[lastIndex] = updater(updatedBlocks[lastIndex]);
+
+      return {
+        ...prev,
+        conversations: {
+          ...prev.conversations,
+          [modeId]: updatedBlocks,
+        },
+        lastUpdated: Date.now(),
+      };
+    });
+  };
+
+  return { project, addBlock, resetModeConversation, updateLastBlock };
 }

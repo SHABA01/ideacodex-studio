@@ -5,7 +5,7 @@ import { useStudioProjects } from "../hooks/useStudioProjects";
 import StudioCanvas from "../components/studio/canvas/StudioCanvas";
 import AIBar from "../components/studio/assistants/AIBar";
 import ThemeToggle from "../components/ThemeToggle";
-import { generateAIResponse } from "../components/studio/assistants/modeEngine";
+import { streamAIResponse } from "../components/studio/assistants/modeEngine";
 import type { StudioBlock } from "../components/studio/types/studio";
 import "../styles/Studio.css";
 
@@ -18,7 +18,13 @@ export default function Studio({
   onOpenMobile,
   mobileOpen,
 }: StudioProps) {
-  const { project, addBlock, resetModeConversation } = useStudioProjects();
+  const {
+    project,
+    addBlock,
+    resetModeConversation,
+    updateLastBlock,
+  } = useStudioProjects();
+
   const { currentMode } = useMode();
 
   const modeLabel = modes.find(m => m.id === currentMode)?.label ?? "";
@@ -64,8 +70,11 @@ export default function Studio({
 
       <AIBar
         onSend={(text: string) => {
+          const userId = Date.now().toString();
+
+          // 1️⃣ Add user block
           const userBlock: StudioBlock = {
-            id: Date.now().toString(),
+            id: userId,
             role: "user",
             content: text,
             createdAt: Date.now(),
@@ -73,16 +82,28 @@ export default function Studio({
 
           addBlock(currentMode, userBlock);
 
-          setTimeout(() => {
-            addBlock(
-              currentMode,
-              generateAIResponse({
-                mode: currentMode,
-                userText: text,
-                previousBlocks: project.conversations[currentMode] || [],
-              })
-            );
-          }, 600);
+          // 2️⃣ Add placeholder AI block
+          const aiId = Date.now().toString() + "-ai";
+
+          addBlock(currentMode, {
+            id: aiId,
+            role: "ai",
+            content: "",
+            createdAt: Date.now(),
+          });
+
+          // 3️⃣ Start streaming
+          streamAIResponse({
+            mode: currentMode,
+            userText: text,
+            previousBlocks: project.conversations[currentMode] || [],
+            onChunk: (chunk) => {
+              updateLastBlock(currentMode, (block) => ({
+                ...block,
+                content: chunk,
+              }));
+            },
+          });
         }}
       />
 
