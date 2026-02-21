@@ -5,7 +5,7 @@ import { useStudioProjects } from "../hooks/useStudioProjects";
 import StudioCanvas from "../components/studio/canvas/StudioCanvas";
 import AIBar from "../components/studio/assistants/AIBar";
 import ThemeToggle from "../components/ThemeToggle";
-import { mockAIResponse } from "../components/studio/assistants/mockAI";
+import { generateAIResponse } from "../components/studio/assistants/modeEngine";
 import type { StudioBlock } from "../components/studio/types/studio";
 import "../styles/Studio.css";
 
@@ -60,7 +60,13 @@ export default function Studio({
           addBlock(currentMode, userBlock);
 
           setTimeout(() => {
-            addBlock(currentMode, mockAIResponse(text));
+            addBlock(
+             currentMode,
+             generateAIResponse({
+               mode: currentMode,
+               userText: text,
+             })
+            );
           }, 600);
         }}
       />
