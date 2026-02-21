@@ -4,25 +4,23 @@ import { useState, useEffect } from "react";
 import "../../styles/Sidebar.css";
 import logo from "../../assets/IdeaCodex_icon_yellow.png";
 import { modes } from "../../modes/modeConfig";
+import { useMode } from "../../context/ModeContext";
 
 type SidebarProps = {
   collapsed: boolean;
   setCollapsed: (value: boolean) => void;
   mobileOpen?: boolean;
   onCloseMobile?: () => void;
-  currentMode: string;
-  onModeChange: (modeId: string) => void;
 };
 
 export default function Sidebar({
   collapsed,
   setCollapsed,
   mobileOpen: controlledMobileOpen,
-  onCloseMobile,
-  currentMode,
-  onModeChange
+  onCloseMobile
 }: SidebarProps) {
 
+  const { currentMode, setMode } = useMode();
   const [showExpand, setShowExpand] = useState(false);
   const [internalMobileOpen, setInternalMobileOpen] = useState(false);
 
@@ -99,7 +97,7 @@ export default function Sidebar({
               key={mode.id}
               className={`nav-item ${currentMode === mode.id ? "active" : ""}`}
               onClick={() => {
-                onModeChange(mode.id);
+                setMode(mode.id);
                 setMobileOpen(false);
               }}
             >
@@ -149,7 +147,7 @@ export default function Sidebar({
                     currentMode === mode.id ? "active" : ""
                   }`}
                   onClick={() => {
-                    onModeChange(mode.id);
+                    setMode(mode.id);
                     setMobileOpen(false);
                   }}
                 >

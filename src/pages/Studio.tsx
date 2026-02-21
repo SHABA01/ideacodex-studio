@@ -1,4 +1,6 @@
 // src/pages/Studio.tsx
+import { useMode } from "../context/ModeContext";
+import { modes } from "../modes/modeConfig";
 import { useStudioProjects } from "../hooks/useStudioProjects";
 import StudioCanvas from "../components/studio/canvas/StudioCanvas";
 import AIBar from "../components/studio/assistants/AIBar";
@@ -18,7 +20,8 @@ export default function Studio({
 }: StudioProps) {
   const { project, addBlock } = useStudioProjects();
 
-  const currentMode = "Reality Lens";
+  const { currentMode } = useMode();
+  const modeLabel = modes.find(m => m.id === currentMode)?.label ?? "";
 
   return (
     <div className="studio-root">
@@ -33,7 +36,7 @@ export default function Studio({
             <i className="fa-solid fa-bars" />
           </button>
 
-          <h2 className="studio-mode-name">{currentMode}</h2>
+          <h2 className="studio-mode-name">{modeLabel}</h2>
         </div>
 
         <div className="studio-header-right">
