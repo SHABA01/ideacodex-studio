@@ -56,5 +56,16 @@ export function useStudioProjects() {
     }));
   };
 
-  return { project, addBlock };
+  const resetModeConversation = (modeId: string) => {
+    setProject((prev) => ({
+      ...prev,
+      conversations: {
+        ...prev.conversations,
+        [modeId]: [],
+      },
+      lastUpdated: Date.now(),
+    }));
+  };
+
+  return { project, addBlock, resetModeConversation };
 }

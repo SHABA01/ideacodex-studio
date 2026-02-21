@@ -18,9 +18,9 @@ export default function Studio({
   onOpenMobile,
   mobileOpen,
 }: StudioProps) {
-  const { project, addBlock } = useStudioProjects();
-
+  const { project, addBlock, resetModeConversation } = useStudioProjects();
   const { currentMode } = useMode();
+
   const modeLabel = modes.find(m => m.id === currentMode)?.label ?? "";
 
   return (
@@ -40,6 +40,20 @@ export default function Studio({
         </div>
 
         <div className="studio-header-right">
+          <button
+            className="mode-reset-btn"
+            onClick={() => {
+              if (
+                confirm("Reset this mode conversation? This cannot be undone.")
+              ) {
+                resetModeConversation(currentMode);
+              }
+            }}
+            title="Reset current mode"
+          >
+            <i className="fa-solid fa-rotate-right" />
+          </button>
+
           <ThemeToggle />
         </div>
       </header>

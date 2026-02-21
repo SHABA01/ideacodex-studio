@@ -22,12 +22,12 @@ body {
   font-size: 1.4rem;
   color: var(--accent-gold);
   padding: 8px 18px;
-  border-radius: 6px;
+  border-radius: 999px;
   transition: all 0.3s ease;
 }
 
 .theme-toggle:hover {
-  transform: scale(1.1);
+  transform: scale(0.8);
   background: var(--accent-gold);
   color: #000;
 }

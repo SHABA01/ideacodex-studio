@@ -299,61 +299,6 @@
   display: none;
 }
 
-/* ========================= SIDEBAR THEME TOGGLE ========================= */
-
-/* Make the wrapper button behave like a nav-item */
-.sidebar-theme-toggle {
-  background: none;
-  border: none;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  border-radius: 8px;
-  color: var(--text-secondary);
-  cursor: pointer;
-  font-weight: 600;
-  text-align: left;
-}
-
-.sidebar-theme-toggle:hover {
-  color: var(--accent-gold);
-  transform: scale(0.9);
-}
-
-/* match icon size of other items */
-.sidebar-theme-toggle i {
-  width: 20px;
-  text-align: center;
-  font-size: 1.1rem;
-}
-
-/* Hidden button that only captures direct clicks, not hovers */
-.sidebar-theme-hidden-btn {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  cursor: pointer;
-
-  /* 🧠 KEY FIX — do NOT block hover/click on other elements */
-  pointer-events: none;
-}
-
-.sidebar-theme-wrapper {
-  display: flex;          /* REQUIRED for gap to work */
-  align-items: center;    /* match nav-items */
-  gap: 12px;              /* same spacing as nav-items */
-  width: 100%;            /* full row like nav-item */
-}
-
-.sidebar-mode, .mobile-drawer-mode {
-  padding: 0;
-  opacity: 1;
-  font-weight: 700;
-  color: var(--accent-gold);
-  text-transform: uppercase;
-}
-
 /* ================= LOCK STATES ================= */
 
 .nav-item.locked {

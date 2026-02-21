@@ -111,6 +111,11 @@
   cursor: not-allowed;
 }
 
+/* 🌙 Dark Mode Overrides */
+[data-theme="dark"] .ai-actions .btn-send:hover {
+  color: var(--text-primary);
+}
+
 /* ===============================
    META
    =============================== */
