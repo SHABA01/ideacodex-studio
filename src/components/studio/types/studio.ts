@@ -19,11 +19,16 @@ export interface StudioBlock {
 /**
  * A Studio project represents a conversation workspace.
  */
+export type ModeSession = {
+  sessionId: string;
+  blocks: StudioBlock[];
+  summary?: string;
+};
+
 export type StudioProject = {
   id: string;
   name: string;
-  description?: string;
-  conversations: Record<string, StudioBlock[]>;
+  conversations: Record<string, ModeSession>;
   lastUpdated: number;
 };
 

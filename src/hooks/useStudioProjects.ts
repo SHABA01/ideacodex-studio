@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
-import type { StudioProject, StudioBlock } from "../components/studio/types/studio";
+import type {
+  StudioProject,
+  StudioBlock,
+  ModeSession,
+} from "../components/studio/types/studio";
 import { modes } from "../modes/modeConfig";
 
 const STORAGE_KEY = "ideacodex-project";
@@ -9,16 +13,32 @@ function loadProjectFromStorage(): StudioProject | null {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
 
-    return JSON.parse(raw) as StudioProject;
+    const parsed = JSON.parse(raw);
+
+    // 🧠 Migration Guard
+    const isOldStructure =
+      Array.isArray(parsed?.conversations?.[Object.keys(parsed.conversations || {})[0]]);
+
+    if (isOldStructure) {
+      // Drop old incompatible structure
+      localStorage.removeItem(STORAGE_KEY);
+      return null;
+    }
+
+    return parsed as StudioProject;
   } catch {
     return null;
   }
 }
 
 export function useStudioProjects() {
-  const initialConversations = modes.reduce<Record<string, StudioBlock[]>>(
+  const initialConversations = modes.reduce<Record<string, ModeSession>>(
     (acc, mode) => {
-      acc[mode.id] = [];
+      acc[mode.id] = {
+        sessionId: crypto.randomUUID(),
+        blocks: [],
+        summary: undefined,
+      };
       return acc;
     },
     {}
@@ -46,14 +66,29 @@ export function useStudioProjects() {
   }, [project]);
 
   const addBlock = (modeId: string, block: StudioBlock) => {
-    setProject((prev) => ({
-      ...prev,
-      conversations: {
-        ...prev.conversations,
-        [modeId]: [...prev.conversations[modeId], block],
-      },
-      lastUpdated: Date.now(),
-    }));
+    setProject((prev) => {
+      const session = prev.conversations[modeId];
+      if (!session) return prev;
+
+      const newBlocks = [...session.blocks, block];
+
+      // 🧠 Compression Trigger (Scaffold Only)
+      if (newBlocks.length > 20) {  
+       // TODO: compressSession(modeId) when real LLM integrated
+     }
+
+      return {
+        ...prev,
+        conversations: {
+          ...prev.conversations,
+          [modeId]: {
+            ...session,
+            blocks: newBlocks,
+          },
+        },
+        lastUpdated: Date.now(),
+      };
+    });
   };
 
   const resetModeConversation = (modeId: string) => {
@@ -61,7 +96,11 @@ export function useStudioProjects() {
       ...prev,
       conversations: {
         ...prev.conversations,
-        [modeId]: [],
+        [modeId]: {
+          sessionId: crypto.randomUUID(),
+          blocks: [],
+          summary: undefined,
+        },
       },
       lastUpdated: Date.now(),
     }));
@@ -72,7 +111,10 @@ export function useStudioProjects() {
     updater: (block: StudioBlock) => StudioBlock
   ) => {
     setProject((prev) => {
-      const modeBlocks = prev.conversations[modeId] || [];
+      const modeSession = prev.conversations[modeId];
+      if (!modeSession) return prev;
+
+      const modeBlocks = modeSession.blocks;
       if (!modeBlocks.length) return prev;
 
       const updatedBlocks = [...modeBlocks];
@@ -84,7 +126,10 @@ export function useStudioProjects() {
         ...prev,
         conversations: {
           ...prev.conversations,
-          [modeId]: updatedBlocks,
+          [modeId]: {
+            ...modeSession,
+            blocks: updatedBlocks,
+          },
         },
         lastUpdated: Date.now(),
       };

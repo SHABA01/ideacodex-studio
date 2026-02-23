@@ -30,7 +30,17 @@ export default function Studio({
 
   const modeLabel = modes.find(m => m.id === currentMode)?.label ?? "";
 
-  const [isGenerating, setIsGenerating] = useState(false);
+  type GenerationState =
+    | "idle"
+    | "generating"
+    | "stopped"
+    | "completed"
+    | "error";
+
+  const [generationState, setGenerationState] = useState<GenerationState>("idle");
+  const isGenerating = generationState === "generating";
+  const isStopped = generationState === "stopped";
+  const isError = generationState === "error";
   const abortRef = useRef<AbortController | null>(null);
 
   return (
@@ -55,6 +65,7 @@ export default function Studio({
               className="mode-stop-btn"
               onClick={() => {
                 abortRef.current?.abort();
+                setGenerationState("stopped");
               }}
               title="Stop generation"
             >
@@ -82,7 +93,7 @@ export default function Studio({
 
       <div className="studio-canvas-wrapper">
         <StudioCanvas
-          blocks={project.conversations[currentMode] || []}
+          blocks={project.conversations[currentMode]?.blocks || []}
           isTyping={isGenerating}
         />
       </div>
@@ -112,16 +123,18 @@ export default function Studio({
             createdAt: Date.now(),
           });
 
-          setIsGenerating(true);
+          setGenerationState("generating");
 
           const controller = new AbortController();
           abortRef.current = controller;
+
+          let didAbort = false;
 
           try {
             await streamAIResponse({
               mode: currentMode,
               userText: text,
-              previousBlocks: project.conversations[currentMode] || [],
+              previousBlocks: project.conversations[currentMode]?.blocks || [],
               signal: controller.signal,
               onChunk: (chunk) => {
                 updateLastBlock(currentMode, (block) => ({
@@ -131,11 +144,18 @@ export default function Studio({
               },
             });
           } catch (err) {
-            if ((err as any).name !== "AbortError") {
+            if ((err as any).name === "AbortError") {
+              didAbort = true;
+              setGenerationState("stopped");
+            } else {
               console.error(err);
+              setGenerationState("error");
             }
           } finally {
-            setIsGenerating(false);
+            if (!didAbort) {
+              setGenerationState("completed");
+            }
+
             abortRef.current = null;
           }
         }}
