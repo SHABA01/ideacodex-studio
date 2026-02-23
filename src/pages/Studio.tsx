@@ -1,5 +1,5 @@
 // src/pages/Studio.tsx
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useMode } from "../context/ModeContext";
 import { modes } from "../modes/modeConfig";
 import { useStudioProjects } from "../hooks/useStudioProjects";
@@ -42,6 +42,13 @@ export default function Studio({
   const isStopped = generationState === "stopped";
   const isError = generationState === "error";
   const abortRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    if (generationState === "generating") {
+      abortRef.current?.abort();
+      setGenerationState("stopped");
+    }
+  }, [currentMode]);
 
   return (
     <div className="studio-root">
