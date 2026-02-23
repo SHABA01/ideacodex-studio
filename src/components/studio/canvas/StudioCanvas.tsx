@@ -8,11 +8,13 @@ const NEAR_BOTTOM_PX = 80;
 interface StudioCanvasProps {
   blocks?: StudioBlock[];
   isTyping?: boolean;
+  generationState?: "idle" | "generating" | "stopped" | "completed" | "error";
 }
 
 export default function StudioCanvas({
   blocks = [],
   isTyping = false,
+  generationState = "idle",
 }: StudioCanvasProps) {
   const isEmpty = blocks.length === 0;
 
@@ -108,6 +110,22 @@ export default function StudioCanvas({
               <span className="dot" />
               <span className="dot" />
               <span className="dot" />
+            </div>
+          </div>
+        )}
+
+        {generationState === "stopped" && (
+          <div className="msg-row left">
+            <div className="msg system status">
+              ⛔ Generation stopped
+            </div>
+          </div>
+        )}
+
+        {generationState === "error" && (
+          <div className="msg-row left">
+            <div className="msg system status error">
+              ⚠ Error generating response
             </div>
           </div>
         )}

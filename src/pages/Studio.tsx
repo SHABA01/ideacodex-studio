@@ -102,6 +102,7 @@ export default function Studio({
         <StudioCanvas
           blocks={project.conversations[currentMode]?.blocks || []}
           isTyping={isGenerating}
+          generationState={generationState}
         />
       </div>
 
